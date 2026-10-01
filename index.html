@@ -697,8 +697,9 @@
       return `
   <section class="hero">
     <div class="hero-track" id="heroTrack">
-      ${HERO_SLIDES.map(s => `<div class="hero-slide" style="background-image:url('${s.image}')">
-        <div>
+      ${HERO_SLIDES.map(s => `<div class="hero-slide">
+        <img class="hero-img" src="${s.image}" alt="" draggable="false">
+        <div class="hero-content">
           ${s.title ? `<h2>${s.title}</h2>` : ''}
           <p>${s.text}</p>
           <a href="${s.link}" class="btn-candy amarillo hero-btn">${s.cta}</a>
@@ -708,6 +709,12 @@
     <button class="hero-arrow left" onclick="heroMove(-1)">‹</button>
     <button class="hero-arrow right" onclick="heroMove(1)">›</button>
     <div class="hero-dots" id="heroDots"></div>
+  </section>
+
+  <section class="proximo-section" aria-label="Próximo en llegar">
+    <div class="container">
+      <img class="proximo-img" src="${imgCandidates('img/PROXIMO_EN_LLEGAR')[0]}" data-imgbase="img/PROXIMO_EN_LLEGAR" data-extidx="0" onerror="proximoImgError(this)" alt="Próximo en llegar" draggable="false">
+    </div>
   </section>
 
   <section>
@@ -766,6 +773,18 @@
     </div>
   </section>
   `;
+    }
+
+    // Banner "Próximo en llegar": prueba las extensiones habituales de img/PROXIMO_EN_LLEGAR.
+    // Si no existe ninguna, oculta la sección (no usa la imagen temporal de productos).
+    function proximoImgError(el) {
+      const list = imgCandidates(el.dataset.imgbase);
+      const idx = parseInt(el.dataset.extidx, 10) + 1;
+      if (idx < list.length) { el.dataset.extidx = idx; el.src = list[idx]; return; }
+      el.onerror = null;
+      console.warn('Imagen no encontrada en la carpeta img:', el.dataset.imgbase);
+      const sec = el.closest('.proximo-section');
+      if (sec) sec.hidden = true;
     }
 
     let heroIndex = 0, heroTimer = null;
