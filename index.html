@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAXI DULCES </title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- ================= INTRO ================= -->
+  <div id="intro">
+    <div class="intro-logo">🍬 MAXIDULCES 🍭</div>
+    <div class="intro-sub">Preparando tus dulces favoritos...</div>
+  </div>
+
+  <!-- ================= HEADER ================= -->
+  <header>
+    <div class="header-inner">
+
+      <!-- LOGO -->
+      <a href="#/" class="logo">
+        <img src="img/logo_principal.png" alt="Maxi Dulces">
+      </a>
+
+      <!-- CATEGORÍAS -->
+      <nav class="cats" id="navCats"></nav>
+
+      <!-- ACCIONES -->
+      <div class="header-actions">
+
+        <!-- BUSCAR -->
+        <button class="icon-btn" id="btnSearch" title="Buscar">
+          🔍
+        </button>
+
+        <!-- CARRITO -->
+        <button class="cart-btn" id="btnCart">
+          🛒
+          <span class="txt">Mi carrito</span>
+          (<span id="cartCount">0</span>)
+        </button>
+
+        <!-- MENÚ MÓVIL -->
+        <button class="hamb icon-btn" id="btnHamb">
+          ☰
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+
+  <!-- OVERLAY -->
+  <div class="overlay-dim" id="overlayDim"></div>
+
+  <!-- MENÚ MÓVIL -->
+  <div class="mobile-panel" id="mobilePanel"></div>
+  <!-- ================= SEARCH ================= -->
+  <div id="searchOverlay">
+    <div class="search-box">
+      <span class="search-close" id="closeSearch">✕</span>
+      <input type="text" id="searchInput" placeholder="Buscar dulces, chocolates, gomitas...">
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
+
+  <!-- ================= APP ROOT ================= -->
+  <main id="app"></main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    <div class="container">
+      <div class="foot-grid">
+        <div class="foot-col">
+          <div class="foot-logo">🍭 MAXI DULCES</div>
+          <p>Los dulces, gomitas y chocolates que te sacan una sonrisa. Antojo garantizado en cada pedido.</p>
+          <div class="foot-social">
+            <a href="#" id="socWhats" title="WhatsApp" target="_blank" rel="noopener">📱</a>
+            <a href="#" id="socInsta" title="Instagram" target="_blank" rel="noopener" hidden>📸</a>
+            <a href="#" id="socFb" title="Facebook" target="_blank" rel="noopener" hidden>📘</a>
+          </div>
+        </div>
+        <div class="foot-col">
+          <h4>Categorías</h4>
+          <a href="#/galletas">Galletas</a>
+          <a href="#/chocolates">Chocolates</a>
+          <a href="#/gomitas">Gomitas y caramelos</a>
+          <a href="#/importados">Dulces importados</a>
+          <a href="#/combos">Combos</a>
+        </div>
+        <div class="foot-col">
+          <h4>Contáctanos</h4>
+          <a href="#" id="footWhats" target="_blank" rel="noopener">📱 WhatsApp: <span id="footPhone"></span></a>
+          <a href="#" id="footEmail" hidden></a>
+          <p>🕐 Lun–Sáb 9am–7pm</p>
+          <p>📍 Bogotá, Colombia</p>
+        </div>
+      </div>
+      <div class="foot-bottom">© 2026 Maxi Dulces. Todos los derechos reservados.</div>
+    </div>
+  </footer>
+
+  <!-- ================= CART ================= -->
+  <div id="cartOverlay"></div>
+  <div id="cartPanel">
+    <div class="cart-head">
+      <h3>🛒 Tu carrito</h3>
+      <span style="cursor:pointer;font-size:22px" id="closeCart">✕</span>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-foot">
+      <div class="total-row"><span>Total</span><span id="cartTotal">$0</span></div>
+      <button class="btn-candy" style="width:100%;justify-content:center" id="btnCheckout">FINALIZAR COMPRA</button>
+    </div>
+  </div>
+
+  <!-- ================= CHECKOUT ================= -->
+  <div id="checkoutOverlay">
+    <div class="checkout-box">
+      <h3 style="margin-bottom:6px;">Resumen de tu pedido</h3>
+      <p style="font-size:13.5px;color:var(--tinta-suave)">Confirma tus datos y te contactaremos por WhatsApp</p>
+      <div class="order-summary" id="orderSummary"></div>
+      <label>Nombre completo</label>
+      <input type="text" id="ckName" placeholder="Tu nombre y apellido">
+      <label>Teléfono</label>
+      <input type="text" id="ckPhone" placeholder="Tu número de celular">
+      <label>Dirección de entrega</label>
+      <input type="text" id="ckAddress" placeholder="Barrio, calle y número">
+      <button class="btn-candy verde" style="width:100%;justify-content:center;margin-top:18px" id="btnWhats">CONFIRMAR
+        PEDIDO POR WHATSAPP</button>
+      <p style="text-align:center;margin-top:12px;font-size:12px;color:var(--tinta-suave);cursor:pointer"
+        id="closeCheckout">Cancelar</p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* =====================================================
+       CONFIGURACIÓN — EDITA ESTO
+    ===================================================== */
+    const WHATSAPP_NUMBER = "573117060896"; // Número de contacto: 3117060896 (con indicativo de país, sin +)
+    const CONTACT_EMAIL = "";   // Pendiente: escribe aquí el correo de contacto (ej. "correo@dominio.com") y aparecerá en el footer
+    const INSTAGRAM_URL = "";   // Opcional: enlace de Instagram (si se deja vacío, el ícono no se muestra)
+    const FACEBOOK_URL = "";    // Opcional: enlace de Facebook (si se deja vacío, el ícono no se muestra)
+
+    /* =====================================================
+       DATOS DE CATEGORÍAS
+    ===================================================== */
+    const CATEGORIES = [
+      { id: 'galletas', label: 'Galletas', emoji: '🍪', color: '#FCC44D', desc: 'Crocantes, rellenas y clásicas. Perfectas para acompañar cualquier momento dulce.' },
+      { id: 'chocolates', label: 'Chocolates', emoji: '🍫', color: '#BD4191', desc: 'Chocolate cremoso, con leche, oscuro o relleno. Un capricho irresistible.' },
+      { id: 'gomitas', label: 'Gomitas y caramelos', emoji: '🍬', color: '#EA4D67', desc: 'Gomitas, ositos, ácidas y caramelos de toda la vida en un solo lugar.' },
+      { id: 'importados', label: 'Dulces importados', emoji: '🌎', color: '#58B99A', desc: 'Sabores de otros países que no vas a encontrar en cualquier tienda.' },
+      { id: 'combos', label: 'Combos más vendidos', emoji: '🎁', color: '#BD4191', desc: 'Paquetes especiales para compartir o darte un gusto por menos.' },
+      { id: 'novedades', label: 'Novedades', emoji: '✨', color: '#58B99A', desc: 'Lo último que llegó a Maxi Dulces, recién salido de la bodega.' },
+    ];
+
+    /* =====================================================
+       PRODUCTOS
+    ===================================================== */
+    let uid = 1;
+    function p(name, categoria, precio, opts = {}) {
+      return Object.assign({
+        id: 'p' + (uid++), name, categoria, precio,
+        precioAnterior: null, disponible: true, mayoreo: false, novedad: false, halloween: false, emoji: '🍬'
+      }, opts);
+    }
+    const PRODUCTS = [
+      // GALLETAS
+      p('GALLETA CON CHOCOLATE CAFÉ DISPLAY X24 UND', 'galletas', 17200, {
+        emoji: '🍪', img: 'img/Wafer_Voa_Chocolate_Cafe'
+      }),
+      p('GALLETA CON CHOCOLATE BLANCO DISPLAY X24 UND', 'galletas', 17200, {
+        emoji: '🍪', img: 'img/Wafer_Voa_Chocolate_Blanco'
+      }),
+      p('GALLETA WAFER PRENDS COCONUT CHOCOLATE CAFÉ X70gr DISPLEY X24 UND', 'galletas', 28000, {
+        emoji: '🍪', img: 'img/Galleta_Wafer_Prends_Coconut_Chocolate_Cafe'
+      }),
+      p('GALLETA WAFER ITALIANO CHOCOLATE CAFE X70gr DISPLAY X24 UND', 'galletas', 28000, {
+        emoji: '🍪', img: 'img/Galleta_Wafer_Italiano_Chocolate_Cafe'
+      }),
+      p('GALLETA WAFER XL 77 CHOCOLATE BLANCO X70 gr', 'galletas', 30600, {
+        emoji: '🍪', img: 'img/Galleta_Wafer_Chocolate_Blanco_XL_77'
+      }),
+      p('GALLETA WAFER XL 77 CHOCOLATE FRESA X70 gr', 'galletas', 30600, {
+        emoji: '🍪', img: 'img/Galleta_Wafer_Chocolate_Fresa_XL_77'
+      }),
+      p('GALLETA WAFER XL 77 CHOCOLATE CAFE X70 gr', 'galletas', 30600, {
+        emoji: '🍪', img: 'img/Galleta_Wafer_Chocolate_Cafe_XL_77'
+      }),
+      // CHOCOLATES
+      p('CHOCOLATE ALPINES X1KL', 'chocolates', 28000, {
+        emoji: '🍫', img: 'img/Chocolates_Alpines'
+      }),
+      p('TABLETA CHOCOLATE STAR SWEET X16,5 gr DISPLAY X 24 UNIDADES', 'chocolates', 14000, {
+        emoji: '🍫', img: 'img/Tableta_Chocolate_Star_Sweet'
+      }),
+      p('ESTUCHE CORAZÓN CHOCO HAPPY X5 UND', 'chocolates', 7700, {
+        emoji: '🍫', img: 'img/Estuche_Corazon_Choco_Happy_5_und'
+      }),
+      p('ESTUCHE CORAZÓN CHOCO HAPPY X 3 UND', 'chocolates', 5800, {
+        emoji: '🍫', img: 'img/Estuche_Corazon_Choco_Happy_3_und'
+      }),
+      p('CHOCOLATINA CON RELLENO DE AVELLANA X 40gr Display X 24 Unds', 'chocolates', 26200, {
+        emoji: '🍫', img: 'img/Chocolatina_Rixos_Roja'
+      }),
+      p('CHOCO WAFER BAR X 16,5 gr X 24 Unds', 'chocolates', 14400, {
+        emoji: '🍫', img: 'img/Choco_Wafer_Bar'
+      }),
+      p('CHOCOLATINA CON RELLENO DE FRESA X 40gr Display X 24 Unds', 'chocolates', 26200, {
+        emoji: '🍫', img: 'img/Chocolatina_Rixos_Rosada'
+      }),
+      // GOMITAS Y CARAMELOS
+      p('GELATINA DULCE CONEJO X30 UND X40gr', 'gomitas', 21400, {
+        emoji: '🐰', img: 'img/Gelatina_Dulce_Conejo_30_und'
+      }),
+      p('GELATINA DULCE PANDA X30 UND X42gr', 'gomitas', 21400, {
+        emoji: '🐼', img: 'img/Gelatina_Dulce_Panda_30_und'
+      }),
+      p('Big Bom XXL Diamante x 25gr bolsa x 48 unds', 'gomitas', 21600, {
+        emoji: '🍬', img: 'img/Bigbom_Diamante_XXL'
+      }),
+      p('Big Bom XXL Fresa x 25gr bolsa x 48 unds', 'gomitas', 21600, {
+        emoji: '🍬', img: 'img/Bigbom_Fresa_XXL'
+      }),
+      p('Big Bom XXL Pinta Labios x 25gr bolsa x 48 unds', 'gomitas', 21600, {
+        emoji: '🍬', img: 'img/Bigbom_Mouth_Painter_XXL'
+      }),
+      p('Big Bom XXL School (centro masticable) x 25gr bolsa x 48 unds', 'gomitas', 21600, {
+        emoji: '🍬', img: 'img/Bigbom_School_XXL'
+      }),
+      p('Chupeta Pink Heart bolsa x 50 unds', 'gomitas', 6500, {
+        emoji: '🍬', img: 'img/Chupeta_Pink_Hearts'
+      }),
+      p('Banana Frutas Rellenas bolsa x 100 unds', 'gomitas', 8500, {
+        emoji: '🍬', img: 'img/Frutas_Rellenas'
+      }),
+      p('Big Bom Bombonera XL Sabores Surtidos x 90 unds', 'gomitas', 33000, {
+        emoji: '🍬', img: 'img/Bigbom_Bombonera_XL'
+      }),
+      // IMPORTADOS
+    ];
+
+    // Aún no hay combos reales. Para agregar uno: { id:'c1', nombre:'...', productos:['...'], precio:0, precioAnterior:null, img:'img/...', badge:'...', novedad:false, halloween:false }
+    const COMBOS = [];
+
+    // Tarjetas de categorías del inicio (imágenes ya existentes en la carpeta img)
+    const HOME_CATS = [
+      { label: 'Importados', href: '#/importados', img: 'img/IMPORTADOS.png' },
+      { label: 'Caramelos', href: '#/gomitas', img: 'img/CARAMELOS.png' },
+      { label: 'Gomitas', href: '#/gomitas', img: 'img/GOMITAS.png' },
+      { label: 'Chocolates', href: '#/chocolates', img: 'img/CHOCOLATES.png' },
+      { label: 'Galletas', href: '#/galletas', img: 'img/GALLETAS.png' },
+    ];
+
+    const HERO_SLIDES = [
+
+      {
+        title: '',
+        text: 'Los mejores dulces, gomitas y chocolates a un clic de distancia.',
+        image: 'img/carrusel1.png', cta: 'Ver novedades',
+        link: '#/novedades'
+      },
+
+      {
+        title: '',
+        text: 'Arma tu combo favorito y ahorra en cada compra.',
+        image: 'img/carrusel_combos.png', cta: 'Ver novedades',
+        cta: 'Ver combos',
+        link: '#/combos'
+      },
+
+      {
+        title: '',
+        text: 'Gomitas, chocolates y combos con toda la magia del terror dulce.',
+        image: 'img/carrusel_dulces_halloween.png', cta: 'Ver novedades',
+        cta: 'Ver dulces de Halloween',
+        link: '#/halloween'
+      },
+
+      {
+        title: '',
+        text: 'Descubre nuestra selección de dulces importados.',
+        image: 'img/carrusel_dulces_importados.png', cta: 'Ver novedades',
+        cta: 'Ver importados',
+        link: '#/importados'
+      }
+
+    ];
+
+    /* =====================================================
+       ESTADO GLOBAL
+    ===================================================== */
+    let CART = []; // {refId, tipo:'producto'|'combo', cantidad}
+
+    function fmt(n) { return '$' + n.toLocaleString('es-CO'); }
+
+    /* =====================================================
+       IMÁGENES: resolución automática de extensión
+       (para "img/producto_x" y "img/marca_de_agua_maxidulces",
+       que no tienen extensión definida todavía)
+    ===================================================== */
+    const IMG_EXT_FALLBACKS = ['png', 'jpg', 'jpeg', 'webp', 'PNG', 'JPG', 'JPEG', 'WEBP', 'jfif', 'avif', 'gif'];
+    const PLACEHOLDER_IMG_BASE = 'img/producto_x - copia'; // también se prueba img/producto_x
+    function hasImgExt(path) { return /\.[a-z0-9]+$/i.test(path); }
+
+    // Genera todas las rutas posibles para una imagen: primero la ruta exacta y
+    // luego variantes de mayúsculas/minúsculas, guiones, guiones bajos y espacios,
+    // combinadas con las extensiones habituales (también en mayúscula: .JPG, .PNG...).
+    // Así la imagen carga aunque el archivo real no coincida al 100% con el nombre
+    // (útil en servidores que distinguen mayúsculas, como GitHub Pages).
+    function imgCandidates(path) {
+      const cut = path.lastIndexOf('/') + 1;
+      const dir = path.slice(0, cut);
+      let name = path.slice(cut);
+      let ext = null;
+      const em = name.match(/\.([a-z0-9]+)$/i);
+      if (em) { ext = em[1]; name = name.slice(0, -em[0].length); }
+      const variants = [];
+      [name, name.replace(/_/g, '-'), name.replace(/-/g, '_'), name.replace(/[-_]+/g, ' ')].forEach(v => {
+        [v, v.toLowerCase(), v.toUpperCase(), v.toLowerCase().replace(/(^|[-_ ])([a-z])/g, (m, s, c) => s + c.toUpperCase())].forEach(x => { if (!variants.includes(x)) variants.push(x); });
+      });
+      const exts = ext ? [ext, ...IMG_EXT_FALLBACKS.filter(e => e !== ext)] : IMG_EXT_FALLBACKS;
+      const out = [];
+      variants.forEach(v => exts.forEach(e => out.push(`${dir}${v}.${e}`)));
+      if (path === PLACEHOLDER_IMG_BASE) out.push(...imgCandidates('img/producto_x'));
+      return out;
+    }
+
+    // Atributos para usar directamente dentro de un <img ...> en el HTML.
+    // Prueba automáticamente las variantes de nombre y extensión hasta encontrar el
+    // archivo real. Si ninguna existe, cae en la imagen temporal img/producto_x
+    // y deja un aviso en la consola del navegador con la ruta que no se encontró.
+    function imgSrcAttrs(path) {
+      return `src="${imgCandidates(path)[0]}" data-imgbase="${path}" data-extidx="0" onerror="handleImgExtFallback(this)"`;
+    }
+    function handleImgExtFallback(el) {
+      const base = el.dataset.imgbase;
+      const list = imgCandidates(base);
+      const idx = parseInt(el.dataset.extidx, 10) + 1;
+      if (idx < list.length) {
+        el.dataset.extidx = idx;
+        el.src = list[idx];
+        return;
+      }
+      if (base !== PLACEHOLDER_IMG_BASE) {
+        console.warn('Imagen no encontrada en la carpeta img:', base);
+        el.dataset.imgbase = PLACEHOLDER_IMG_BASE;
+        el.dataset.extidx = '0';
+        el.src = imgCandidates(PLACEHOLDER_IMG_BASE)[0];
+        return;
+      }
+      el.onerror = null; // ni la imagen real ni producto_x existen
+    }
+    // Igual que arriba, pero como Promise (para el canvas de la marca de agua),
+    // con el mismo fallback automático a producto_x.
+    function loadImageFlexible(path) {
+      return new Promise((resolve, reject) => {
+        function tryPath(p) {
+          return new Promise((res, rej) => {
+            const candidates = imgCandidates(p);
+            let i = 0;
+            const img = new Image();
+            img.onload = () => res(img);
+            img.onerror = next;
+            function next() {
+              if (i >= candidates.length) { rej(new Error('No se pudo cargar: ' + p)); return; }
+              img.src = candidates[i++];
+            }
+            next();
+          });
+        }
+        tryPath(path).then(resolve).catch(() => {
+          if (path === PLACEHOLDER_IMG_BASE) { reject(new Error('No se pudo cargar ninguna imagen')); return; }
+          tryPath(PLACEHOLDER_IMG_BASE).then(resolve).catch(reject);
+        });
+      });
+    }
+
+    function findProduct(id) { return PRODUCTS.find(x => x.id === id); }
+    function findCombo(id) { return COMBOS.find(x => x.id === id); }
+
+    function addToCart(id, tipo) {
+      const existing = CART.find(i => i.refId === id && i.tipo === tipo);
+      if (existing) existing.cantidad++;
+      else CART.push({ refId: id, tipo, cantidad: 1 });
+      updateCartUI();
+      bumpCart();
+      showToast('Agregado al carrito 🛒');
+    }
+    function changeQty(refId, tipo, delta) {
+      const item = CART.find(i => i.refId === refId && i.tipo === tipo);
+      if (!item) return;
+      item.cantidad += delta;
+      if (item.cantidad <= 0) CART = CART.filter(i => i !== item);
+      updateCartUI();
+    }
+    function removeFromCart(refId, tipo) {
+      CART = CART.filter(i => !(i.refId === refId && i.tipo === tipo));
+      updateCartUI();
+    }
+    function cartTotalCount() { return CART.reduce((a, i) => a + i.cantidad, 0); }
+    function cartTotalPrice() {
+      return CART.reduce((sum, i) => {
+        const ref = i.tipo === 'producto' ? findProduct(i.refId) : findCombo(i.refId);
+        return sum + (ref ? ref.precio * i.cantidad : 0);
+      }, 0);
+    }
+
+    function bumpCart() {
+      const btn = document.getElementById('btnCart');
+      btn.classList.remove('bump'); void btn.offsetWidth; btn.classList.add('bump');
+    }
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function updateCartUI() {
+      document.getElementById('cartCount').textContent = cartTotalCount();
+      const wrap = document.getElementById('cartItems');
+      if (CART.length === 0) {
+        wrap.innerHTML = `<div class="empty-state"><span class="em">🍭</span>Tu carrito está vacío.<br>¡Agrega algo dulce!</div>`;
+      } else {
+        wrap.innerHTML = CART.map(i => {
+          const ref = i.tipo === 'producto' ? findProduct(i.refId) : findCombo(i.refId);
+          if (!ref) return '';
+          const cartImg = i.tipo === 'producto' ? (ref.img || 'img/g' + ref.categoria + '.png') : (ref.img || 'img/galletas.png');
+          return `<div class="cart-item">
+        <img class="thumb" ${imgSrcAttrs(cartImg)} alt="${ref.nombre || ref.name}" loading="lazy">
+        <div class="info">
+          <h5>${ref.nombre || ref.name}</h5>
+          <div>${fmt(ref.precio)} c/u</div>
+          <div class="qty-row">
+            <button onclick="changeQty('${i.refId}','${i.tipo}',-1)">−</button>
+            <span>${i.cantidad}</span>
+            <button onclick="changeQty('${i.refId}','${i.tipo}',1)">+</button>
+            <span class="remove-x" onclick="removeFromCart('${i.refId}','${i.tipo}')">Eliminar</span>
+          </div>
+        </div>
+      </div>`;
+        }).join('');
+      }
+      document.getElementById('cartTotal').textContent = fmt(cartTotalPrice());
+    }
+
+    /* =====================================================
+       RENDER: TARJETA DE PRODUCTO / COMBO
+    ===================================================== */
+    function productCard(prod) {
+      const imgBase = prod.img || 'img/' + prod.categoria + '.png';
+      return `<div class="prod-card">
+    <div class="prod-badges">
+      ${prod.mayoreo ? '<span class="badge mayoreo">🏷️ MAYOREO</span>' : ''}
+      ${prod.novedad ? '<span class="badge novedad">✨ NUEVO</span>' : ''}
+      ${prod.precioAnterior ? '<span class="badge descuento">OFERTA</span>' : ''}
+    </div>
+    <div class="prod-img protected-img">
+      <img ${imgSrcAttrs(imgBase)} alt="${prod.name}" loading="lazy" draggable="false">
+    </div>
+    <div class="prod-body">
+      <h4>${prod.name}</h4>
+      <div class="price-row">
+        <span class="price">${fmt(prod.precio)}</span>
+        ${prod.precioAnterior ? `<span class="price-old">${fmt(prod.precioAnterior)}</span>` : ''}
+      </div>
+      <span class="avail ${prod.disponible ? 'si' : 'no'}">${prod.disponible ? '🟢 Disponible' : '🔴 Agotado'}</span>
+      <button class="add-btn" ${prod.disponible ? '' : 'disabled'} onclick="addToCart('${prod.id}','producto')">
+        ${prod.disponible ? 'AGREGAR AL CARRITO' : 'AGOTADO'}
+      </button>
+    </div>
+  </div>`;
+    }
+    function comboCard(c) {
+      return `<div class="combo-card">
+    <span class="combo-badge">${c.badge}</span>
+    <div class="combo-top protected-img"><img src="${c.img || 'img/combos.png'}" alt="${c.nombre}" loading="lazy" draggable="false"></div>
+    <div class="combo-body">
+      <h4>${c.nombre}</h4>
+      <ul>${c.productos.map(x => `<li>${x}</li>`).join('')}</ul>
+      <div class="price-row">
+        <span class="price">${fmt(c.precio)}</span>
+        ${c.precioAnterior ? `<span class="price-old">${fmt(c.precioAnterior)}</span>` : ''}
+      </div>
+      <button class="btn-candy morado" style="width:100%;justify-content:center;margin-top:12px" onclick="addToCart('${c.id}','combo')">COMPRAR AHORA</button>
+    </div>
+  </div>`;
+    }
+
+    /* =====================================================
+       PROTECCIÓN DE IMÁGENES
+       No hay ningún botón visible de descarga. La imagen que
+       se ve al navegar es siempre la original, sin marca de
+       agua. El sitio bloquea las formas normales del navegador
+       para guardar la imagen original (clic derecho, arrastrar,
+       menú de mantener presionado en móvil). La única forma de
+       "guardar" una imagen desde el sitio es a través del menú
+       propio que aparece al hacer clic derecho sobre un producto,
+       el cual genera al vuelo (en un <canvas>) una copia con la
+       marca de agua superpuesta — la imagen original en el
+       servidor nunca se modifica ni se expone directamente.
+    ===================================================== */
+    const WATERMARK_BASE = 'img/marca_de_agua_maxidulces';
+    let _watermarkImgPromise = null;
+    function getWatermarkImage() {
+      if (!_watermarkImgPromise) _watermarkImgPromise = loadImageFlexible(WATERMARK_BASE);
+      return _watermarkImgPromise;
+    }
+    function slugify(str) {
+      return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-').replace(/(^-+|-+$)/g, '') || 'producto';
+    }
+    async function downloadWatermarkedImage(imgEl, productName) {
+      const src = imgEl.currentSrc || imgEl.src;
+      try {
+        const [productImg, watermarkImg] = await Promise.all([
+          loadImageFlexible(src),
+          getWatermarkImage()
+        ]);
+        const canvas = document.createElement('canvas');
+        canvas.width = productImg.naturalWidth;
+        canvas.height = productImg.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(productImg, 0, 0, canvas.width, canvas.height);
+
+        // Marca de agua centrada, proporcional al ancho de la imagen
+        const wmWidth = canvas.width * 0.42;
+        const wmHeight = wmWidth * (watermarkImg.naturalHeight / watermarkImg.naturalWidth);
+        const wmX = (canvas.width - wmWidth) / 2;
+        const wmY = (canvas.height - wmHeight) / 2;
+        ctx.globalAlpha = 0.55;
+        ctx.drawImage(watermarkImg, wmX, wmY, wmWidth, wmHeight);
+        ctx.globalAlpha = 1;
+
+        canvas.toBlob(blob => {
+          if (!blob) { showToast('No se pudo generar la imagen 😢'); return; }
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `maxidulces-${slugify(productName)}.png`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 2000);
+          showToast('Imagen guardada con marca de agua ✅');
+        }, 'image/png', 0.95);
+      } catch (err) {
+        console.error(err);
+        showToast('No se pudo guardar la imagen 😢');
+      }
+    }
+
+    /* -------- Menú propio al hacer clic derecho sobre un producto -------- */
+    function closeImageContextMenu() {
+      const m = document.getElementById('imgCtxMenu');
+      if (m) m.remove();
+    }
+    function showImageContextMenu(evt, imgEl, productName) {
+      closeImageContextMenu();
+      const menu = document.createElement('div');
+      menu.id = 'imgCtxMenu';
+      menu.className = 'img-ctx-menu';
+      menu.innerHTML = `<button type="button">🖼️ Guardar imagen</button>`;
+      document.body.appendChild(menu);
+      const menuW = 190, menuH = 44;
+      const x = Math.min(evt.clientX, window.innerWidth - menuW - 8);
+      const y = Math.min(evt.clientY, window.innerHeight - menuH - 8);
+      menu.style.left = Math.max(8, x) + 'px';
+      menu.style.top = Math.max(8, y) + 'px';
+      menu.querySelector('button').addEventListener('click', () => {
+        downloadWatermarkedImage(imgEl, productName);
+        closeImageContextMenu();
+      });
+    }
+    document.addEventListener('contextmenu', e => {
+      const wrap = e.target.closest('.protected-img');
+      if (!wrap) return;
+      const imgEl = wrap.querySelector('img');
+      if (!imgEl) return;
+      e.preventDefault();
+      showImageContextMenu(e, imgEl, imgEl.alt || 'producto');
+    });
+    document.addEventListener('dragstart', e => {
+      if (e.target.closest('.protected-img')) e.preventDefault();
+    });
+    document.addEventListener('click', e => { if (!e.target.closest('.img-ctx-menu')) closeImageContextMenu(); });
+    document.addEventListener('scroll', closeImageContextMenu, true);
+    window.addEventListener('blur', closeImageContextMenu);
+
+    /* =====================================================
+       ROUTER
+    ===================================================== */
+    const routes = ['galletas', 'chocolates', 'gomitas', 'importados'];
+
+    function currentRoute() {
+      return (location.hash || '#/').replace('#/', '').replace('#', '') || 'home';
+    }
+
+    function render() {
+      const route = currentRoute();
+      document.querySelectorAll('#navCats a, .cross-nav a, .mobile-panel a').forEach(a => a.classList.remove('active'));
+      const app = document.getElementById('app');
+      if (route === 'home') { app.innerHTML = renderHome(); mountHeroCarousel(); }
+      else if (routes.includes(route)) { app.innerHTML = renderCategoryPage(route); }
+      else if (route === 'combos') { app.innerHTML = renderCombosPage(); }
+      else if (route === 'novedades') { app.innerHTML = renderNovedadesPage(); }
+      else if (route === 'halloween') { app.innerHTML = renderHalloweenPage(); }
+      else { app.innerHTML = renderHome(); mountHeroCarousel(); }
+      document.querySelectorAll(`a[href="#/${route}"]`).forEach(a => a.classList.add('active'));
+      window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    /* -------- NAV BUILD -------- */
+    function buildNav() {
+      const items = CATEGORIES.map(c => `<a href="#/${c.id}">${c.emoji} ${c.label}</a>`).join('');
+      document.getElementById('navCats').innerHTML = items;
+      document.getElementById('mobilePanel').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <strong style="font-family:'Baloo 2';font-size:20px;">Menú</strong>
+      <span style="font-size:22px;cursor:pointer" id="closeMobile">✕</span>
+    </div>
+    ${items}
+    <a href="#/halloween">🎃 Halloween</a>
+  `;
+    }
+
+    /* -------- HALLOWEEN: decoración temática (solo visual) -------- */
+    function halloweenDecor() {
+      const sparks = [[6, 30, 3, 0, '#FFB347'], [12, 72, 2, 1.1, '#fff'], [22, 14, 2, 2.2, '#C79BFF'], [31, 86, 3, .6, '#FF8A1F'], [44, 8, 2, 1.7, '#fff'], [57, 90, 2, 2.6, '#FFD27A'], [68, 12, 3, .3, '#FFB347'], [76, 80, 2, 1.4, '#C79BFF'], [88, 46, 2, 2.1, '#fff'], [93, 68, 3, .9, '#7CFFB2'], [3, 52, 2, 1.9, '#fff'], [97, 26, 2, .5, '#FFD27A']]
+        .map(([x, y, s, dl, col]) => `<span class="hw-spark" style="left:${x}%;top:${y}%;width:${s}px;height:${s}px;background:${col};box-shadow:0 0 8px ${col};animation-delay:${dl}s"></span>`).join('');
+      return `<div class="hw-decor" aria-hidden="true">
+    <svg width="0" height="0" style="position:absolute"><defs>
+      <linearGradient id="hwPumpG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFA23A"/><stop offset=".6" stop-color="#F26A0B"/><stop offset="1" stop-color="#B8420A"/></linearGradient>
+      <symbol id="hwWeb" viewBox="0 0 200 200"><path fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" d="M0 0L200.0 0.0M0 0L193.2 51.8M0 0L173.2 100.0M0 0L141.4 141.4M0 0L100.0 173.2M0 0L51.8 193.2M0 0L0.0 200.0M34.0 0.0Q30.3 4.0 32.8 8.8M32.8 8.8Q28.3 11.7 29.4 17.0M29.4 17.0Q24.3 18.6 24.0 24.0M24.0 24.0Q18.6 24.3 17.0 29.4M17.0 29.4Q11.7 28.3 8.8 32.8M8.8 32.8Q4.0 30.3 0.0 34.0M62.0 0.0Q55.3 7.3 59.9 16.0M59.9 16.0Q51.6 21.4 53.7 31.0M53.7 31.0Q44.3 34.0 43.8 43.8M43.8 43.8Q34.0 44.3 31.0 53.7M31.0 53.7Q21.4 51.6 16.0 59.9M16.0 59.9Q7.3 55.3 0.0 62.0M94.0 0.0Q83.9 11.0 90.8 24.3M90.8 24.3Q78.2 32.4 81.4 47.0M81.4 47.0Q67.1 51.5 66.5 66.5M66.5 66.5Q51.5 67.1 47.0 81.4M47.0 81.4Q32.4 78.2 24.3 90.8M24.3 90.8Q11.0 83.9 0.0 94.0M130.0 0.0Q116.0 15.3 125.6 33.6M125.6 33.6Q108.1 44.8 112.6 65.0M112.6 65.0Q92.8 71.2 91.9 91.9M91.9 91.9Q71.2 92.8 65.0 112.6M65.0 112.6Q44.8 108.1 33.6 125.6M33.6 125.6Q15.3 116.0 0.0 130.0M172.0 0.0Q153.5 20.2 166.1 44.5M166.1 44.5Q143.0 59.2 149.0 86.0M149.0 86.0Q122.8 94.2 121.6 121.6M121.6 121.6Q94.2 122.8 86.0 149.0M86.0 149.0Q59.2 143.0 44.5 166.1M44.5 166.1Q20.2 153.5 0.0 172.0"/></symbol>
+      <symbol id="hwSpider" viewBox="0 0 64 56">
+        <g fill="none" stroke="#120a1c" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M27 24L13 9L5 22M26 29L8 21L1 34M26 34L7 36L2 50M28 40L14 46L10 55M37 24L51 9L59 22M38 29L56 21L63 34M38 34L57 36L62 50M36 40L50 46L54 55"/></g>
+        <ellipse cx="32" cy="36" rx="13" ry="15" fill="#120a1c" stroke="rgba(255,255,255,.14)"/><circle cx="32" cy="17" r="7" fill="#1a0f26"/>
+        <path d="M32 29l4 6-4 6-4-6z" fill="#FF8A1F"/><circle cx="29.5" cy="15.5" r="1.4" fill="#ff5a2a"/><circle cx="34.5" cy="15.5" r="1.4" fill="#ff5a2a"/>
+      </symbol>
+      <symbol id="hwBat" viewBox="0 0 60 30"><path d="M30 12C28 6 26 4 24 3C24 6 23 8 21 9C16 4 8 4 1 9C6 10 8 12 9 16C12 13 15 13 17 16C19 14 22 14 24 17C26 18 28 20 30 26C32 20 34 18 36 17C38 14 41 14 43 16C45 13 48 13 51 16C52 12 54 10 59 9C52 4 44 4 39 9C37 8 36 6 36 3C34 4 32 6 30 12Z"/></symbol>
+      <symbol id="hwPumpkin" viewBox="0 0 120 100">
+        <ellipse cx="34" cy="60" rx="28" ry="34" fill="url(#hwPumpG)"/><ellipse cx="86" cy="60" rx="28" ry="34" fill="url(#hwPumpG)"/><ellipse cx="60" cy="58" rx="27" ry="38" fill="url(#hwPumpG)"/>
+        <path d="M46 24Q38 58 46 94M74 24Q82 58 74 94" fill="none" stroke="rgba(120,40,0,.35)" stroke-width="2"/>
+        <path d="M58 22Q56 10 64 4Q68 10 64 22Z" fill="#3c2a14"/>
+        <g fill="#FFE08A"><path d="M40 50L52 50L46 62Z"/><path d="M68 50L80 50L74 62Z"/><path d="M60 64L64 72L56 72Z"/><path d="M40 76Q60 92 80 76L74 74L68 80L60 74L52 80L46 74Z"/></g>
+      </symbol>
+    </defs></svg>
+    <span class="hw-moon"></span>
+    <svg class="hw-web" viewBox="0 0 200 200"><use href="#hwWeb"/></svg>
+    <svg class="hw-web r" viewBox="0 0 200 200"><use href="#hwWeb"/></svg>
+    <div class="hw-fog a"></div><div class="hw-fog b"></div>
+    ${sparks}
+    <svg class="hw-bat b1" viewBox="0 0 60 30"><use href="#hwBat"/></svg>
+    <svg class="hw-bat b2" viewBox="0 0 60 30"><use href="#hwBat"/></svg>
+    <svg class="hw-bat b3" viewBox="0 0 60 30"><use href="#hwBat"/></svg>
+    <div class="hw-spider s1"><svg viewBox="0 0 64 56"><use href="#hwSpider"/></svg></div>
+    <div class="hw-spider s2"><svg viewBox="0 0 64 56"><use href="#hwSpider"/></svg></div>
+    <div class="hw-hill"></div>
+    <svg class="hw-pumpkin l" viewBox="0 0 120 100"><use href="#hwPumpkin"/></svg>
+    <svg class="hw-pumpkin r" viewBox="0 0 120 100"><use href="#hwPumpkin"/></svg>
+  </div>`;
+    }
+
+    function soonBlock(msg) {
+      return `<div class="soon"><span class="soon-em">🍭</span><h4>Muy pronto</h4><p>${msg || 'Estamos preparando productos para esta sección.'}</p></div>`;
+    }
+
+    /* -------- HOME -------- */
+    function renderHome() {
+      const catBlocks = ['galletas', 'chocolates', 'gomitas', 'importados'].map(catId => {
+        const cat = CATEGORIES.find(c => c.id === catId);
+        const items = PRODUCTS.filter(p => p.categoria === catId).slice(0, 4);
+        return `<section>
+      <div class="container">
+        <div class="cat-block-head">
+          <h3>${cat.emoji} ${cat.label}</h3>
+        </div>
+        ${items.length ? `<div class="prod-grid">${items.map(productCard).join('')}</div>
+        <div class="see-cat-wrap"><a href="#/${catId}" class="btn-candy">VER CATEGORÍA →</a></div>` : soonBlock()}
+      </div>
+    </section>
+    <div class="scallop scallop-${cat.color === '#FCC44D' ? 'amarillo' : cat.color === '#BD4191' ? 'morado' : cat.color === '#EA4D67' ? 'rosado' : 'verde'}"></div>`;
+      }).join('');
+
+      return `
+  <section class="hero">
+    <div class="hero-track" id="heroTrack">
+      ${HERO_SLIDES.map(s => `<div class="hero-slide" style="background-image:url('${s.image}')">
+        <div>
+          ${s.title ? `<h2>${s.title}</h2>` : ''}
+          <p>${s.text}</p>
+          <a href="${s.link}" class="btn-candy amarillo hero-btn">${s.cta}</a>
+        </div>
+      </div>`).join('')}
+    </div>
+    <button class="hero-arrow left" onclick="heroMove(-1)">‹</button>
+    <button class="hero-arrow right" onclick="heroMove(1)">›</button>
+    <div class="hero-dots" id="heroDots"></div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2 class="section-title">¡Encuentra tus dulces favoritos!</h2>
+      <p class="section-sub">Explora nuestras categorías y descubre todo lo que tenemos para ti</p>
+      <div class="cat-grid">
+        ${HOME_CATS.map(c => `
+          <a class="cat-card" href="${c.href}">
+            <span class="cat-img"><img src="${c.img}" alt="${c.label}" loading="lazy" draggable="false"></span>
+            <h4>${c.label}</h4>
+          </a>`).join('')}
+      </div>
+    </div>
+  </section>
+
+  <div class="scallop scallop-amarillo scallop-flip"></div>
+  ${catBlocks}
+
+  <section style="background:#FBF2F6;">
+    <div class="container">
+      <div class="cat-block-head" style="justify-content:center;flex-direction:column;text-align:center;">
+        <span class="eyebrow" style="background:var(--morado);color:#fff;">🎁 ¡ANÍMATE HOY!</span>
+        <h3>Tenemos combos especiales para ti</h3>
+      </div>
+      ${COMBOS.length ? `<div class="combo-grid">${COMBOS.slice(0, 3).map(comboCard).join('')}</div>
+      <div class="see-cat-wrap"><a href="#/combos" class="btn-candy morado">VER TODOS LOS COMBOS →</a></div>` : soonBlock('Pronto tendremos combos especiales para ti.')}
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="cat-block-head"><h3>✨ Novedades</h3></div>
+      ${PRODUCTS.some(p => p.novedad) ? `<div class="prod-grid">${PRODUCTS.filter(p => p.novedad).slice(0, 4).map(productCard).join('')}</div>
+      <div class="see-cat-wrap"><a href="#/novedades" class="btn-candy verde">VER TODAS LAS NOVEDADES →</a></div>` : soonBlock('Pronto compartiremos aquí lo último que llegue.')}
+    </div>
+  </section>
+
+  <section class="halloween" style="margin:0 clamp(10px,2vw,20px) 20px;padding:clamp(28px,5vw,44px) clamp(6px,2vw,20px);">
+    ${halloweenDecor()}
+    <div class="container" style="padding:0 12px;">
+      <h2 class="section-title">🎃 ¡Halloween llegó a Maxi Dulces!</h2>
+      <p class="section-sub">Gomitas, chocolates y combos con toda la magia del terror dulce</p>
+      ${PRODUCTS.some(p => p.halloween) ? `<div class="prod-grid">${PRODUCTS.filter(p => p.halloween).slice(0, 4).map(productCard).join('')}</div>
+      <div class="see-cat-wrap"><a href="#/halloween" class="btn-candy amarillo">VER DULCES DE HALLOWEEN →</a></div>` : soonBlock('Muy pronto llegan los dulces de Halloween.')}
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="cta-banner">
+        <h2>¿Se te antojó algo dulce?</h2>
+        <p>Arma tu pedido y recíbelo en la puerta de tu casa. ¡Es más fácil de lo que crees!</p>
+        <button class="btn-candy amarillo" onclick="openCart()">🛒 COMPRAR AHORA</button>
+      </div>
+    </div>
+  </section>
+  `;
+    }
+
+    let heroIndex = 0, heroTimer = null;
+    function mountHeroCarousel() {
+      heroIndex = 0;
+      renderHeroDots();
+      moveHero();
+      clearInterval(heroTimer);
+      heroTimer = setInterval(() => heroMove(1), 5000);
+    }
+    function renderHeroDots() {
+      document.getElementById('heroDots').innerHTML = HERO_SLIDES.map((_, i) => `<button class="${i === heroIndex ? 'active' : ''}" onclick="heroGoTo(${i})"></button>`).join('');
+    }
+    function heroMove(dir) {
+      heroIndex = (heroIndex + dir + HERO_SLIDES.length) % HERO_SLIDES.length;
+      moveHero();
+    }
+    function heroGoTo(i) { heroIndex = i; moveHero(); }
+    function moveHero() {
+      const track = document.getElementById('heroTrack');
+      if (!track) return;
+      track.style.transform = `translateX(-${heroIndex * 100}%)`;
+      renderHeroDots();
+    }
+
+    /* -------- CATEGORY PAGE -------- */
+    let catState = { search: '', avail: 'todos', mayoreo: false, sort: 'default' };
+
+    function renderCrossNav(activeId) {
+      return `<div class="cross-nav">
+    ${CATEGORIES.filter(c => c.id !== 'novedades').map(c => `<a href="#/${c.id}" class="${c.id === activeId ? 'active' : ''}">${c.emoji} ${c.label}</a>`).join('')}
+    <a href="#/halloween" class="${activeId === 'halloween' ? 'active' : ''}">🎃 Halloween</a>
+  </div>`;
+    }
+
+    function renderCategoryPage(catId) {
+      catState = { search: '', avail: 'todos', mayoreo: false, sort: 'default' };
+      const cat = CATEGORIES.find(c => c.id === catId);
+      return `
+  <div class="container" style="padding-top:24px;">
+    <div class="crumbs"><a href="#/">Inicio</a> / ${cat.label}</div>
+    <div class="cat-banner" style="background:${cat.color}">
+      <span class="em">${cat.emoji}</span>
+      <div>
+        <h1>${cat.label}</h1>
+        <p>${cat.desc}</p>
+        <span class="count-pill" id="prodCount"></span>
+      </div>
+    </div> 
+    ${renderCrossNav(catId)}
+    <div class="filters-bar">
+      <div class="search-inline">🔍<input type="text" id="catSearch" placeholder="Buscar en ${cat.label}..."></div>
+      <button class="chip" data-avail="todos">Todos</button>
+      <button class="chip" data-avail="si">Disponibles</button>
+      <button class="chip" data-avail="no">Agotados</button>
+      <button class="chip" id="chipMayoreo">🏷️ Mayoreo</button>
+      <label class="chip">Ordenar:
+        <select id="catSort">
+          <option value="default">Relevancia</option>
+          <option value="asc">Precio: menor a mayor</option>
+          <option value="desc">Precio: mayor a menor</option>
+        </select>
+      </label>
+    </div>
+    <div class="prod-grid" id="catGrid"></div>
+  </div>
+  <div style="height:40px"></div>
+  `;
+      // dynamic wiring happens post-render via afterCategoryRender
+    }
+
+    function afterCategoryRender(catId) {
+      const chips = document.querySelectorAll('.filters-bar .chip[data-avail]');
+      chips.forEach(ch => ch.addEventListener('click', () => {
+        catState.avail = ch.dataset.avail;
+        chips.forEach(c => c.classList.remove('active'));
+        ch.classList.add('active');
+        drawCatGrid(catId);
+      }));
+      document.querySelector('.filters-bar .chip[data-avail="todos"]').classList.add('active');
+      document.getElementById('chipMayoreo').addEventListener('click', function () {
+        catState.mayoreo = !catState.mayoreo;
+        this.classList.toggle('active');
+        drawCatGrid(catId);
+      });
+      document.getElementById('catSort').addEventListener('change', e => {
+        catState.sort = e.target.value; drawCatGrid(catId);
+      });
+      document.getElementById('catSearch').addEventListener('input', e => {
+        catState.search = e.target.value.toLowerCase(); drawCatGrid(catId);
+      });
+      drawCatGrid(catId);
+    }
+
+    function drawCatGrid(catId) {
+      let items = PRODUCTS.filter(p => p.categoria === catId);
+      if (!items.length) {
+        document.getElementById('prodCount').textContent = 'Próximamente';
+        document.getElementById('catGrid').innerHTML = `<div style="grid-column:1/-1">${soonBlock()}</div>`;
+        return;
+      }
+      if (catState.search) items = items.filter(p => p.name.toLowerCase().includes(catState.search));
+      if (catState.avail === 'si') items = items.filter(p => p.disponible);
+      if (catState.avail === 'no') items = items.filter(p => !p.disponible);
+      if (catState.mayoreo) items = items.filter(p => p.mayoreo);
+      if (catState.sort === 'asc') items = items.slice().sort((a, b) => a.precio - b.precio);
+      if (catState.sort === 'desc') items = items.slice().sort((a, b) => b.precio - a.precio);
+
+      document.getElementById('prodCount').textContent = `${items.length} producto${items.length === 1 ? '' : 's'} disponible${items.length === 1 ? '' : 's'}`;
+      const grid = document.getElementById('catGrid');
+      grid.innerHTML = items.length ? items.map(productCard).join('') :
+        `<div class="empty-state" style="grid-column:1/-1"><span class="em">😢</span>No encontramos ese dulce.<br>Intenta buscar otro producto.</div>`;
+    }
+
+    /* -------- COMBOS PAGE -------- */
+    function renderCombosPage() {
+      return `
+  <div class="container" style="padding-top:24px;">
+    <div class="crumbs"><a href="#/">Inicio</a> / Combos</div>
+    <div class="cat-banner" style="background:linear-gradient(120deg,var(--morado),var(--rosado))">
+      <span class="em">🎁</span>
+      <div><h1>Combos más vendidos</h1><p>Ahorra armando tu combo favorito.</p>
+      <span class="count-pill">${COMBOS.length ? COMBOS.length + " combos disponibles" : "Próximamente"}</span></div>
+    </div>
+    ${renderCrossNav('combos')}
+    ${COMBOS.length ? `<div class="combo-grid">${COMBOS.map(comboCard).join('')}</div>` : soonBlock('Pronto tendremos combos especiales para ti.')}
+  </div>
+  <div style="height:40px"></div>`;
+    }
+
+    /* -------- NOVEDADES PAGE -------- */
+    function renderNovedadesPage() {
+      const items = PRODUCTS.filter(p => p.novedad);
+      const combos = COMBOS.filter(c => c.novedad);
+      return `
+  <div class="container" style="padding-top:24px;">
+    <div class="crumbs"><a href="#/">Inicio</a> / Novedades</div>
+    <div class="cat-banner" style="background:var(--verde)">
+      <span class="em">✨</span>
+      <div><h1>Novedades</h1><p>Lo último que llegó a Maxi Dulces.</p>
+      <span class="count-pill">${items.length + combos.length ? (items.length + combos.length) + " productos disponibles" : "Próximamente"}</span></div>
+    </div>
+    ${renderCrossNav('novedades')}
+    ${items.length + combos.length ? `<div class="prod-grid">${items.map(productCard).join('')}${combos.map(comboCard).join('')}</div>` : soonBlock('Pronto compartiremos aquí lo último que llegue.')}
+  </div>
+  <div style="height:40px"></div>`;
+    }
+
+    /* -------- HALLOWEEN PAGE -------- */
+    function renderHalloweenPage() {
+      const items = PRODUCTS.filter(p => p.halloween);
+      const combos = COMBOS.filter(c => c.halloween);
+      return `
+  <div class="halloween" style="margin:24px clamp(10px,2vw,20px) 0;padding:clamp(24px,4vw,36px) clamp(6px,2vw,20px);">
+    ${halloweenDecor()}
+    <div class="container" style="padding:0 12px;">
+      <div class="crumbs" style="color:#e5d6ea;"><a href="#/" style="color:#fff;">Inicio</a> / Halloween</div>
+      <div class="cat-banner" style="background:rgba(255,255,255,.08)">
+        <span class="em">🎃</span>
+        <div><h1>Halloween en Maxi Dulces</h1><p>Todo lo espeluznantemente dulce, en un solo lugar.</p>
+        <span class="count-pill">${items.length + combos.length ? (items.length + combos.length) + " productos disponibles" : "Próximamente"}</span></div>
+      </div>
+      ${items.length + combos.length ? `<div class="prod-grid">${items.map(productCard).join('')}${combos.map(comboCard).join('')}</div>` : soonBlock('Muy pronto llegan los dulces de Halloween.')}
+    </div>
+  </div>
+  <div style="height:40px"></div>`;
+    }
+
+    /* =====================================================
+       BÚSQUEDA GLOBAL
+    ===================================================== */
+    function globalSearch(q) {
+      q = q.toLowerCase().trim();
+      if (!q) return [];
+      return PRODUCTS.filter(p => p.name.toLowerCase().includes(q) || p.categoria.includes(q)).slice(0, 10);
+    }
+    document.getElementById('searchInput').addEventListener('input', e => {
+      const results = globalSearch(e.target.value);
+      const box = document.getElementById('searchResults');
+      if (!e.target.value.trim()) { box.innerHTML = ''; return; }
+      box.innerHTML = results.length ? results.map(p => `
+    <div class="search-item">
+      <img class="thumb" ${imgSrcAttrs(p.img || 'img/' + p.categoria + '.png')} alt="${p.name}" loading="lazy">
+      <div style="flex:1">
+        <div style="font-weight:700">${p.name}</div>
+        <div style="font-size:12.5px;color:var(--tinta-suave)">${fmt(p.precio)} · ${p.disponible ? 'Disponible' : 'Agotado'}</div>
+      </div>
+      <button class="btn-outline" onclick="addToCart('${p.id}','producto');document.getElementById('searchOverlay').classList.remove('open')">Agregar</button>
+    </div>`).join('') : `<div class="empty-state"><span class="em">😢</span>No encontramos ese dulce.<br>Intenta buscar otro producto.</div>`;
+    });
+
+    /* =====================================================
+       CHECKOUT / WHATSAPP
+    ===================================================== */
+    function openCheckout() {
+      if (CART.length === 0) { showToast('Tu carrito está vacío 🍭'); return; }
+      const summary = document.getElementById('orderSummary');
+      summary.innerHTML = CART.map(i => {
+        const ref = i.tipo === 'producto' ? findProduct(i.refId) : findCombo(i.refId);
+        return `<div><span>${i.cantidad} × ${ref.nombre || ref.name}</span><span>${fmt(ref.precio * i.cantidad)}</span></div>`;
+      }).join('') + `<div style="border-top:1px solid #e6ddd8;margin-top:8px;padding-top:8px;font-weight:800;"><span>Total</span><span>${fmt(cartTotalPrice())}</span></div>`;
+      document.getElementById('checkoutOverlay').classList.add('open');
+    }
+    function sendWhatsApp() {
+      const name = document.getElementById('ckName').value.trim();
+      const phone = document.getElementById('ckPhone').value.trim();
+      const address = document.getElementById('ckAddress').value.trim();
+      if (!name || !phone || !address) { showToast('Completa tus datos, por favor'); return; }
+      let msg = `Hola, Maxi Dulces \n\nQuiero realizar el siguiente pedido:\n\n`;
+      CART.forEach(i => {
+        const ref = i.tipo === 'producto' ? findProduct(i.refId) : findCombo(i.refId);
+        msg += `• ${ref.nombre || ref.name} × ${i.cantidad}\n`;
+      });
+      msg += `\nTotal: ${fmt(cartTotalPrice())}\n\nMis datos:\nNombre: ${name}\nTeléfono: ${phone}\nDirección: ${address}`;
+      const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+      document.getElementById('checkoutOverlay').classList.remove('open');
+    }
+
+    /* =====================================================
+       EVENTOS GENERALES
+    ===================================================== */
+    function openCart() { document.getElementById('cartPanel').classList.add('open'); document.getElementById('cartOverlay').classList.add('open'); }
+    function closeCartFn() { document.getElementById('cartPanel').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('open'); }
+
+    document.getElementById('btnCart').addEventListener('click', openCart);
+    document.getElementById('closeCart').addEventListener('click', closeCartFn);
+    document.getElementById('cartOverlay').addEventListener('click', closeCartFn);
+    document.getElementById('btnCheckout').addEventListener('click', openCheckout);
+    document.getElementById('closeCheckout').addEventListener('click', () => document.getElementById('checkoutOverlay').classList.remove('open'));
+    document.getElementById('btnWhats').addEventListener('click', sendWhatsApp);
+
+    document.getElementById('btnSearch').addEventListener('click', () => { document.getElementById('searchOverlay').classList.add('open'); document.getElementById('searchInput').focus(); });
+    document.getElementById('closeSearch').addEventListener('click', () => document.getElementById('searchOverlay').classList.remove('open'));
+
+    document.getElementById('btnHamb').addEventListener('click', () => {
+      document.getElementById('mobilePanel').classList.add('open');
+      document.getElementById('overlayDim').classList.add('open');
+    });
+    document.getElementById('overlayDim').addEventListener('click', closeMobile);
+    function closeMobile() {
+      document.getElementById('mobilePanel').classList.remove('open');
+      document.getElementById('overlayDim').classList.remove('open');
+    }
+    document.addEventListener('click', e => {
+      if (e.target.id === 'closeMobile') closeMobile();
+      if (e.target.closest('.mobile-panel a')) closeMobile();
+    });
+
+    window.addEventListener('hashchange', () => { render(); if (currentRoute() !== 'home') { setTimeout(() => { if (routes.includes(currentRoute())) afterCategoryRender(currentRoute()); }, 0); } });
+
+    /* =====================================================
+       INIT
+    ===================================================== */
+    function createConfetti() {
+      const wrap = document.getElementById('intro');
+      const emojis = ['🍬', '🍭', '🍫', '🍩', '🧁', '🍪', '🍡'];
+      for (let i = 0; i < 24; i++) {
+        const el = document.createElement('div');
+        el.className = 'falling';
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.left = Math.random() * 100 + '%';
+        el.style.animationDuration = (2.5 + Math.random() * 2.2) + 's';
+        el.style.animationDelay = (Math.random() * 1.5) + 's';
+        el.style.fontSize = (20 + Math.random() * 24) + 'px';
+        wrap.appendChild(el);
+      }
+    }
+    (function setupContact() {
+      const wa = 'https://wa.me/' + WHATSAPP_NUMBER;
+      document.getElementById('footPhone').textContent = WHATSAPP_NUMBER.replace(/^57/, '');
+      document.getElementById('footWhats').href = wa;
+      document.getElementById('socWhats').href = wa;
+      if (CONTACT_EMAIL) { const e = document.getElementById('footEmail'); e.href = 'mailto:' + CONTACT_EMAIL; e.textContent = '📧 ' + CONTACT_EMAIL; e.hidden = false; }
+      if (INSTAGRAM_URL) { const i = document.getElementById('socInsta'); i.href = INSTAGRAM_URL; i.hidden = false; }
+      if (FACEBOOK_URL) { const f = document.getElementById('socFb'); f.href = FACEBOOK_URL; f.hidden = false; }
+    })();
+    buildNav();
+    createConfetti();
+    render();
+    if (routes.includes(currentRoute())) afterCategoryRender(currentRoute());
+    setTimeout(() => { document.getElementById('intro').classList.add('hide'); }, 2400);
+  </script>
+</body>
+
+</html>
